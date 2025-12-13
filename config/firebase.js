@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const serviceAccountPath = join(__dirname, '../dubai-syndicate-firebase-adminsdk-fbsvc-b3f3d34c34.json');
+const serviceAccountPath = join(__dirname, '../dubai-syndicate-firebase-adminsdk-fbsvc-b3f3d34c34 (1).json');
 if (!admin.apps.length) {
   try {
     const serviceAccount = require(serviceAccountPath);
