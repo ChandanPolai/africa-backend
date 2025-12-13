@@ -4,7 +4,7 @@ const BannerSchema = new mongoose.Schema(
   {
     title: { type: String, default: '' }, // Banner title
     description: { type: String, default: '' }, // Banner description
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Creator
+    // userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, 
     image: { type: String, default: '' }, // Image path
     redirectUrl: { type: String, default: '' }, // URL to redirect
     contact: { type: String, default: '' }, // Contact details
