@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBS Event Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .title-section h1 {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-alert {
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            font-weight: 500;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .icon-input {
+            position: relative;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .icon-input .form-control {
+            padding-left: 45px;
+        }
+
+        .icon-input.textarea i {
+            top: 20px;
+        }
+    </style>
+</head>
+
+<body ng-app="gbsApp" ng-cloak>
+    <div ng-controller="RegistrationController"
+        class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-5">
+        <div class="col-12 col-md-6 col-lg-4" ng-show="showInitial">
+            <div class="form-container p-5">
+                <div class="title-section">
+                    <h1>
+                        <i class="fas fa-user-check me-3"></i>GBS Event Registration
+                    </h1>
+                    <p class="subtitle">
+                        Confirm your attendance and join us for this exciting launch!
+                    </p>
+                </div>
+
+                <form name="registrationForm" ng-submit="submitForm()" novalidate>
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>First Name
+                        </label>
+                        <div class="icon-input">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="firstName" placeholder="Enter your name"
+                                ng-model="formData.firstName" required class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>Last Name
+                        </label>
+                        <div class="icon-input">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="lastName" placeholder="Enter your name"
+                                ng-model="formData.lastName" required class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-comment me-2"></i>Mobile Number
+                        </label>
+                        <div class="icon-input textarea">
+                            <i class="fas fa-comment"></i>
+                            <input type="text" name="mobileNumber" placeholder="Enter Your Mobile Number"
+                                ng-model="formData.mobileNumber" required class="form-control" maxlength="10"
+                                inputmode="numeric" pattern="\d*" style="padding-left: 45px;" />
+                        </div>
+                        <span ng-show="registrationForm.mobileNumber.$error.pattern" class="text-danger">
+                            Please enter numbers only
+                        </span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user-friends me-2"></i>Invited By
+                        </label>
+                        <div class="icon-input">
+                            <i class="fas fa-user-friends"></i>
+                            <input type="text" name="invitedBy" placeholder="Who invited you?"
+                                ng-model="formData.invitedBy" required class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                            ng-disabled="loading || registrationForm.$invalid">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            {{ loading ? 'Submitting...' : 'Submit' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div ng-show="!showInitial"
+            class="success-page d-flex align-items-center justify-content-center min-vh-100 bg-light">
+            <div class="card shadow-lg border-0 p-5 rounded-4 text-center" style="max-width: 600px">
+                <div class="mb-4 text-success">
+                    <i class="fas fa-check-circle fa-3x"></i>
+                </div>
+                <h2 class="mb-3">You're Successfully Registered!</h2>
+                <div class="alert alert-success p-3" style="white-space:pre-wrap;">
+                    <div class="w-100">
+                        <img src="https://gbs-community.s3.ap-south-1.amazonaws.com/IMG-20250606-WA0020.jpg" alt=""
+                            class="w-100" />
+                    </div>
+                    {{message}}
+                </div>
+                <button class="btn btn-primary mt-4 px-4 py-2 rounded-pill" ng-click="reloadPage()">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Registration
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        angular.module('gbsApp', [])
+            .controller('RegistrationController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+                $scope.formData = {
+                    firstName: '',
+                    lastName: '',
+                    mobileNumber: '',
+                    invitedBy: ''
+                };
+                $scope.loading = false;
+
+                $scope.showInitial = true;
+
+                $scope.reloadPage = () => {
+                    window.location.reload();
+                }
+
+                $scope.invitationDetails = `🎉 You're Invited! 🎉
+We are excited to announce the *Official launch of GBS in Bardoli!*
+
+📍 Venue: BS Pizza, near Umrakh College, Baben, Bardoli
+📅 Date: Saturday, June 7, 2025
+⏰ Time: 5:00 p.m.
+👔 Dress Code: Formal
+
+Join us as we kick off this new chapter of Global Business Social (GBS) in Bardoli — a celebration of new beginnings, business growth, and meaningful connections.`;
+
+                $scope.submitForm = function () {
+                    if (!/^\d{10}$/.test($scope.formData.mobileNumber)) {
+                        alert("Please enter a valid 10-digit mobile number.");
+                        return;
+                    }
+
+                    $scope.loading = true;
+
+                    $http.post(`${window.location.origin}/users/submitBasicMemberApplication`, $scope.formData)
+                        .then(function (response) { $scope.showInitial = false; })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                        .finally(function () { $scope.loading = false; });
+                };
+            }]);
+    </script>
+</body>
+
+</html>

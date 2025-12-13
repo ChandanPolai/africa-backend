@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBS Visitor Orientation Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        * {
+            margin: 0;  
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .title-section h1 {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-alert {
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            font-weight: 500;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .icon-input {
+            position: relative;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .icon-input .form-control {
+            padding-left: 45px;
+        }
+
+        .icon-input.textarea i {
+            top: 20px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        /* Searchable Dropdown Styles */
+        .searchable-dropdown {
+            position: relative;
+        }
+
+        .dropdown-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item.selected {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .loading-spinner {
+            padding: 12px 16px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .no-results {
+            padding: 12px 16px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .dropdown-results.show {
+            display: block;
+        }
+
+        .dropdown-results.hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body ng-app="visitorApp" ng-cloak>
+    <div ng-controller="VisitorController"
+        class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-5">
+        <div class="col-12 col-md-8 col-lg-6" ng-show="showForm">
+            <div class="form-container p-5">
+                <div class="title-section">
+                    <h1>
+                        <i class="fas fa-user-tie me-3"></i>Visitor Orientation Form
+                    </h1>
+                    <p class="subtitle">
+                        Please fill in your details to help us serve you better
+                    </p>
+                </div>
+
+                <form name="visitorForm" ng-submit="submitForm()" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label required-field">
+                                <i class="fas fa-user me-2"></i>Full Name
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-user"></i>
+                                <input type="text" name="name" placeholder="Enter your full name"
+                                    ng-model="formData.name" required class="form-control" />
+                            </div>
+                            <span ng-show="visitorForm.name.$touched && visitorForm.name.$error.required" class="text-danger">
+                                Full Name is required
+                            </span>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label required-field">
+                                <i class="fas fa-phone me-2"></i>Mobile Number
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-phone"></i>
+                                <input type="text" name="mobile_number" placeholder="Enter your mobile number"
+                                    ng-model="formData.mobile_number" required class="form-control" maxlength="10"
+                                    inputmode="numeric" pattern="\d{10}" />
+                            </div>
+                            <span ng-show="visitorForm.mobile_number.$error.required && visitorForm.mobile_number.$touched" class="text-danger">
+                                Mobile number is required
+                            </span>
+                            <span ng-show="visitorForm.mobile_number.$error.pattern" class="text-danger">
+                                Please enter a valid 10-digit number
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label required-field">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" name="email" placeholder="Enter your email"
+                                    ng-model="formData.email" required class="form-control" />
+                            </div>
+                            <span ng-show="visitorForm.email.$error.required && visitorForm.email.$touched" class="text-danger">
+                                Email is required
+                            </span>
+                            <span ng-show="visitorForm.email.$error.email" class="text-danger">
+                                Please enter a valid email
+                            </span>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label required-field">
+                                <i class="fas fa-user-friends me-2"></i>Invited By
+                            </label>
+                            <div class="icon-input searchable-dropdown">
+                                <i class="fas fa-user-friends"></i>
+                                <input type="text" 
+                                       name="referBy" 
+                                       placeholder="Search who invited you..."
+                                       ng-model="formData.referBy" 
+                                       ng-change="searchUsers()"
+                                       ng-focus="showDropdown = true"
+                                       ng-blur="hideDropdown()"
+                                       required 
+                                       class="form-control" 
+                                       autocomplete="off" />
+                                
+                                <div class="dropdown-results" ng-class="{'show': showDropdown && (userList.length > 0 || loading || noResults), 'hide': !showDropdown}">
+                                    <div ng-show="loading" class="loading-spinner">
+                                        <i class="fas fa-spinner fa-spin"></i> Searching...
+                                    </div>
+                                    <div ng-show="noResults && !loading" class="no-results">
+                                        No users found
+                                    </div>
+                                    <div ng-repeat="user in userList" 
+                                         class="dropdown-item" 
+                                         ng-mousedown="selectUser(user)"
+                                         ng-class="{'selected': $index === selectedIndex}">
+                                        <strong>{{user.name}}</strong>
+                                        <div style="font-size: 12px; color: #6c757d;" ng-if="user.chapter_name">Chapter: {{user.chapter_name}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span ng-show="visitorForm.referBy.$error.required && visitorForm.referBy.$touched" class="text-danger">
+                                Invited by is required
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label required-field">
+                                <i class="fas fa-briefcase me-2"></i>Business Type
+                            </label>
+                            <div class="icon-input">
+                                <i class="fas fa-briefcase"></i>
+                                <input type="text" name="business_type" placeholder="Your business type"
+                                    ng-model="formData.business_type" required class="form-control" />
+                            </div>
+                            <span ng-show="visitorForm.business_type.$error.required && visitorForm.business_type.$touched" class="text-danger">
+                                Business type is required
+                            </span>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-map-marked-alt me-2"></i>Address
+                            </label>
+                            <textarea name="address" placeholder="Enter your full address" ng-model="formData.address"
+                                class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-star me-2"></i>Interest Level
+                        </label>
+                        <select name="preferences" ng-model="formData.preferences" class="form-select">
+                            <option value="" disabled selected>Select your interest level</option>
+                            <option value="Interested">Interested</option>
+                            <option value="Not Interested">Not Interested</option>
+                            <option value="Maybe">Maybe</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                            ng-disabled="loading || visitorForm.$invalid">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            {{ loading ? 'Submitting...' : 'Submit' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div ng-show="!showForm"
+            class="success-page d-flex align-items-center justify-content-center min-vh-100 bg-light">
+            <div class="card shadow-lg border-0 p-5 rounded-4 text-center" style="max-width: 600px">
+                <div class="mb-4 text-success">
+                    <i class="fas fa-check-circle fa-3x"></i>
+                </div>
+                <h2 class="mb-3">Thank You!</h2>
+                <div class="alert alert-success p-3">
+                    {{message}}
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Click the link below to proceed with payment:</small>
+                </div>
+                <a ng-href="https://rzp.io/rzp/nA3dmx9a" target="_blank" class="btn btn-success btn-lg px-4 py-2 rounded-pill">
+                    <i class="fas fa-external-link-alt me-2"></i>Pay Now via Razorpay
+                </a>
+                <div class="mt-2">
+                    <small class="text-muted">Payment Link: https://rzp.io/rzp/nA3dmx9a</small>
+                </div>
+                <button class="btn btn-primary mt-4 px-4 py-2 rounded-pill" ng-click="reloadPage()">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Form
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        angular.module('visitorApp', [])
+            .controller('VisitorController', ['$scope', '$http', '$window', '$location', '$timeout', function ($scope, $http, $window, $location, $timeout) {
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const eventId = urlParams.get('eventId') || '686beb81e5cf1746aaf0d271';
+                
+                $scope.formData = {
+                    name: '',
+                    mobile_number: '',
+                    email: '',
+                    referBy: '',
+                    refUserId: '',
+                    business_type: '',
+                    address: '',
+                    preferences: '',
+                    eventId: eventId
+                };
+                
+                $scope.loading = false;
+                $scope.showForm = true;
+                $scope.message = '';
+                $scope.userList = [];
+                $scope.showDropdown = false;
+                $scope.selectedIndex = -1;
+                $scope.noResults = false;
+                $scope.searchPromise = null;
+                
+                // Function to search users
+                $scope.searchUsers = function() {
+                    const searchTerm = $scope.formData.referBy;
+                    
+                    // Cancel previous search if exists
+                    if ($scope.searchPromise) {
+                        $timeout.cancel($scope.searchPromise);
+                    }
+                    
+                    // Clear previous results
+                    $scope.userList = [];
+                    $scope.noResults = false;
+                    $scope.selectedIndex = -1;
+                    
+                    // Don't search if input is empty or too short
+                    if (!searchTerm || searchTerm.length < 1) {
+                        $scope.showDropdown = false;
+                        return;
+                    }
+                    
+                    // Show loading and dropdown
+                    $scope.loading = true;
+                    $scope.showDropdown = true;
+                    
+                    // Debounce search - wait 300ms after user stops typing
+                    $scope.searchPromise = $timeout(function() {
+                        const apiUrl = `https://gbs-connect.com/admin/getUsersByEventId?eventId=${eventId}&search=${encodeURIComponent(searchTerm)}`;
+                        //const apiUrl = `http://localhost:3200/admin/getUsersByEventId?eventId=${eventId}&search=${encodeURIComponent(searchTerm)}`;
+                        $http.get(apiUrl)
+                            .then(function(response) {
+                                $scope.loading = false;
+                                
+                                console.log('API Response:', response.data);
+                                
+                                // Parse the correct structure: response.data.data.users
+                                if (response.data && 
+                                    response.data.success && 
+                                    response.data.data && 
+                                    response.data.data.users && 
+                                    Array.isArray(response.data.data.users)) {
+                                    
+                                    $scope.userList = response.data.data.users;
+                                    $scope.noResults = false;
+                                    console.log('Users loaded:', $scope.userList);
+                                } else {
+                                    $scope.userList = [];
+                                    $scope.noResults = true;
+                                    console.log('No users found in response');
+                                }
+                            })
+                            .catch(function(error) {
+                                $scope.loading = false;
+                                $scope.userList = [];
+                                $scope.noResults = true;
+                                console.error('Error fetching users:', error);
+                            });
+                    }, 300);
+                };
+                
+                // Function to select a user from dropdown
+                $scope.selectUser = function(user) {
+                    $scope.formData.referBy = user.name;
+                    $scope.formData.refUserId = user._id; // Store the user ID
+                    $scope.showDropdown = false;
+                    $scope.userList = [];
+                    $scope.selectedIndex = -1;
+                    console.log('Selected user:', user.name, 'ID:', user._id);
+                };
+                
+                // Function to hide dropdown with delay for click events
+                $scope.hideDropdown = function() {
+                    $timeout(function() {
+                        $scope.showDropdown = false;
+                    }, 200);
+                };
+                
+                // Handle keyboard navigation
+                $scope.handleKeydown = function(event) {
+                    if (!$scope.showDropdown || $scope.userList.length === 0) return;
+                    
+                    switch(event.keyCode) {
+                        case 38: // Up arrow
+                            event.preventDefault();
+                            $scope.selectedIndex = Math.max(-1, $scope.selectedIndex - 1);
+                            break;
+                        case 40: // Down arrow
+                            event.preventDefault();
+                            $scope.selectedIndex = Math.min($scope.userList.length - 1, $scope.selectedIndex + 1);
+                            break;
+                        case 13: // Enter
+                            event.preventDefault();
+                            if ($scope.selectedIndex >= 0 && $scope.selectedIndex < $scope.userList.length) {
+                                $scope.selectUser($scope.userList[$scope.selectedIndex]);
+                            }
+                            break;
+                        case 27: // Escape
+                            $scope.showDropdown = false;
+                            break;
+                    }
+                };
+                
+                // Add keydown event listener
+                angular.element($window).on('keydown', function(event) {
+                    $scope.$apply(function() {
+                        $scope.handleKeydown(event);
+                    });
+                });
+
+                $scope.reloadPage = () => {
+                    $scope.showForm = true;
+                }
+
+                $scope.submitForm = function () {
+                    if (!$scope.visitorForm.$valid) {
+                        alert("Please fill all required fields correctly.");
+                        return;
+                    }
+
+                    // Validate that a user was selected from dropdown
+                    if (!$scope.formData.refUserId) {
+                        alert("Please select a valid user from the 'Invited By' dropdown.");
+                        return;
+                    }
+
+                    $scope.loading = true;
+                    
+                    // Prepare data for API - only send required fields
+                    const submitData = {
+                        name: $scope.formData.name,
+                        refUserId: $scope.formData.refUserId,
+                        eventId: $scope.formData.eventId,
+                        mobile_number: $scope.formData.mobile_number,
+                        email: $scope.formData.email,
+                        business_type: $scope.formData.business_type,
+                        address: $scope.formData.address
+                    };
+                    
+                    console.log('Submitting data:', submitData);
+                    
+$http.post('https://gbs-connect.com/admin/createScanVisitor', submitData)
+                        .then(function (response) {
+                            $scope.showForm = false;
+                            $scope.message = response.data.message || 'Visitor data submitted successfully!';
+                        })
+                        .catch(function (error) {
+                            alert("Error submitting form. Please try again.");
+                            console.error(error);
+                        })
+                        .finally(function () { 
+                            $scope.loading = false; 
+                        });
+                };
+            }]);
+    </script>
+</body>
+
+</html>

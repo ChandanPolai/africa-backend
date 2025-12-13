@@ -1,0 +1,1079 @@
+<!-- <!DOCTYPE html>
+<html lang="en" ng-app="membershipApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dubai Syndicate Membership Application</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="url"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .required:after {
+            content: " *";
+            color: red;
+        }
+        .name-group {
+            display: flex;
+            gap: 10px;
+        }
+        .name-group .form-group {
+            flex: 1;
+        }
+        .address-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+            align-items: flex-start;
+        }
+        .address-group .form-group {
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+        }
+        .address-group .error {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .file-error {
+            color: red;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        input.ng-invalid.ng-touched,
+        select.ng-invalid.ng-touched,
+        textarea.ng-invalid.ng-touched {
+            border-color: #e74c3c;
+            background-color: #fde8e8;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        input[type="file"] {
+            padding: 6px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        #video, #canvas {
+            background: #f0f0f0;
+            margin-bottom: 10px;
+            display: none;
+            border: 1px solid #ddd;
+            max-width: 100%;
+        }
+        #photoPreview img {
+            border-radius: 4px;
+            max-width: 300px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        .camera-buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body ng-controller="MembershipController">
+    <div class="logo-container">
+        <img src="/images/App_Icon.png" alt="Dubai Syndicate Logo" class="logo">
+        <h1>Dubai Syndicate Membership Application Form</h1>
+    </div>
+
+    <form name="memberForm" ng-submit="submitForm()" novalidate enctype="multipart/form-data">
+        <div class="form-section">
+            <h2>Chapter Information</h2>
+            <div class="form-group">
+                <label for="chapter" class="required">Chapter</label>
+                <select id="chapter" name="chapter" ng-model="formData.chapter" required>
+                    <option value="">Select Chapter</option>
+                    <option value="Achiever">Achiever</option>
+                    <option value="Believer">Believer</option>
+                    <option value="Creator">Creator</option>
+                    <option value="Dreamer">Dreamer</option>
+                    <option value="Elevator">Elevator</option>
+                </select>
+                <div class="error" ng-show="memberForm.chapter.$touched && memberForm.chapter.$invalid">
+                    Please select a chapter
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="invitedBy" class="required">Who Invited you to this Chapter?</label>
+                <input type="text" id="invitedBy" name="invitedBy" ng-model="formData.invitedBy" required>
+                <div class="error" ng-show="memberForm.invitedBy.$touched && memberForm.invitedBy.$invalid">
+                    Please enter who invited you
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="howHeardAbout" class="required">How did you first hear about Dubai Syndicate?</label>
+                <select id="howHeardAbout" name="howHeardAbout" ng-model="formData.howHeardAbout" required>
+                    <option value="">Select an option</option>
+                    <option value="Friend or Family Member">Friend or Family Member</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Website">Website</option>
+                    <option value="Event">Event</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="error" ng-show="memberForm.howHeardAbout.$touched && memberForm.howHeardAbout.$invalid">
+                    Please select how you heard about Dubai Syndicate
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>ABOUT YOU</h2>
+            <p>Please fill exactly as in the Expression of Interest Form</p>
+            <div class="name-group">
+                <div class="form-group">
+                    <label for="firstName" class="required">First Name</label>
+                    <input type="text" id="firstName" name="firstName" ng-model="formData.applicant.firstName" 
+                           required ng-minlength="2" ng-maxlength="50" ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.firstName.$touched && memberForm.firstName.$error.required">
+                        Please enter your first name
+                    </div>
+                    <div class="error" ng-show="memberForm.firstName.$touched && (memberForm.firstName.$error.minlength || memberForm.firstName.$error.maxlength)">
+                        First name must be between 2-50 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.firstName.$touched && memberForm.firstName.$error.pattern">
+                        First name cannot contain numbers or special characters
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="required">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" ng-model="formData.applicant.lastName" 
+                           required ng-minlength="2" ng-maxlength="50" ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.lastName.$touched && memberForm.lastName.$error.required">
+                        Please enter your last name
+                    </div>
+                    <div class="error" ng-show="memberForm.lastName.$touched && (memberForm.lastName.$error.minlength || memberForm.lastName.$error.maxlength)">
+                        Last name must be between 2-50 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.lastName.$touched && memberForm.lastName.$error.pattern">
+                        Last name cannot contain numbers or special characters
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="companyName" class="required">Company Name</label>
+                <input type="text" id="companyName" name="companyName" ng-model="formData.applicant.companyName" 
+                       required ng-minlength="2" ng-maxlength="100">
+                <div class="error" ng-show="memberForm.companyName.$touched && memberForm.companyName.$error.required">
+                    Please enter your company name
+                </div>
+                <div class="error" ng-show="memberForm.companyName.$touched && (memberForm.companyName.$error.minlength || memberForm.companyName.$error.maxlength)">
+                    Company name must be between 2-100 characters
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="industry" class="required">What is your Industry?</label>
+                <input type="text" id="industry" name="industry" ng-model="formData.applicant.industry" 
+                       placeholder="e.g. Manufacturing, Hospitality, Healthcare" required
+                       ng-pattern="/^[a-zA-Z\s,\-]*$/">
+                <div class="error" ng-show="memberForm.industry.$touched && memberForm.industry.$error.required">
+                    Please enter your industry
+                </div>
+                <div class="error" ng-show="memberForm.industry.$touched && memberForm.industry.$error.pattern">
+                    Industry cannot contain numbers or special characters (except comma and hyphen)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="professionalClassification" class="required">What is your Business Experience in Number Of Years?</label>
+                <input type="text" inputmode="numeric" id="professionalClassification" name="professionalClassification" 
+                       ng-model="formData.applicant.professionalClassification" placeholder="e.g. 10" 
+                       required ng-pattern="/^[0-9]*$/">
+                <div class="error" ng-show="memberForm.professionalClassification.$touched && memberForm.professionalClassification.$error.required">
+                    Please enter your experience
+                </div>
+                <div class="error" ng-show="memberForm.professionalClassification.$touched && memberForm.professionalClassification.$error.pattern">
+                    experience classification contain only number
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="required">Business Address</label>
+                <input type="text" id="businessAddress1" name="businessAddress1" 
+                       ng-model="formData.applicant.businessAddress.addressLine1" placeholder="Address Line 1" required>
+                <div class="error" ng-show="memberForm.businessAddress1.$touched && memberForm.businessAddress1.$invalid">
+                    Please enter address line 1
+                </div>
+                <input type="text" id="businessAddress2" name="businessAddress2" 
+                       ng-model="formData.applicant.businessAddress.addressLine2" placeholder="Address Line 2" style="margin-top: 5px;">
+                <div class="address-group">
+                    <div class="form-group">
+                        <select id="businessState" name="businessState" 
+                                ng-model="formData.applicant.businessAddress.state" ng-change="updateCities()" required>
+                            <option value="">Select State</option>
+                            <option value="Gujarat">Gujarat</option>
+                        </select>
+                        <div class="error" ng-show="memberForm.businessState.$touched && memberForm.businessState.$invalid">
+                            Please select a state
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select id="businessCity" name="businessCity" 
+                                ng-model="formData.applicant.businessAddress.city" required>
+                            <option value="">Select City</option>
+                            <option ng-repeat="city in cities" value="{{city}}">{{city}}</option>
+                        </select>
+                        <div class="error" ng-show="memberForm.businessCity.$touched && memberForm.businessCity.$invalid">
+                            Please select a city
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="businessPostalCode" name="businessPostalCode" 
+                               ng-model="formData.applicant.businessAddress.postalCode" placeholder="Postal / Zip Code" 
+                               required ng-pattern="/^[0-9]{6}$/">
+                        <div class="error" ng-show="memberForm.businessPostalCode.$touched && memberForm.businessPostalCode.$error.required">
+                            Please enter postal code
+                        </div>
+                        <div class="error" ng-show="memberForm.businessPostalCode.$touched && memberForm.businessPostalCode.$error.pattern">
+                            Postal code must be 6 digits
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="required">Email</label>
+                <input type="email" id="email" name="email" ng-model="formData.applicant.email" required>
+                <div class="error" ng-show="memberForm.email.$touched && memberForm.email.$error.required">
+                    Please enter your email
+                </div>
+                <div class="error" ng-show="memberForm.email.$touched && memberForm.email.$error.email">
+                    Please enter a valid email address
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mobileNumber" class="required">Mobile Number</label>
+                <input type="tel" id="mobileNumber" name="mobileNumber" ng-model="formData.applicant.mobileNumber" 
+                       ng-pattern="/^[0-9]{10}$/" placeholder="10 Digits only" required
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error" ng-show="memberForm.mobileNumber.$touched && memberForm.mobileNumber.$error.required">
+                    Please enter your mobile number
+                </div>
+                <div class="error" ng-show="memberForm.mobileNumber.$touched && memberForm.mobileNumber.$error.pattern">
+                    Mobile number must be exactly 10 digits (numbers only)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="secondaryPhone">Secondary phone</label>
+                <input type="tel" id="secondaryPhone" name="secondaryPhone" ng-model="formData.applicant.secondaryPhone" 
+                       ng-pattern="/^[0-9]{10}$/" placeholder="10 Digits only"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error" ng-show="memberForm.secondaryPhone.$touched && memberForm.secondaryPhone.$error.pattern">
+                    Phone number must be exactly 10 digits (numbers only)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gstNumber">GST Number</label>
+                <input type="text" id="gstNumber" name="gstNumber" ng-model="formData.applicant.gstNumber" 
+                       ng-pattern="/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/" 
+                       placeholder="22ABCDE1234F1Z5">
+                <div class="error" ng-show="memberForm.gstNumber.$touched && memberForm.gstNumber.$error.pattern">
+                    Please enter a valid GST number (e.g., 22ABCDE1234F1Z5)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="adhaarNumber" class="required">Aadhaar Number</label>
+                <input type="text" id="adhaarNumber" name="adhaarNumber" ng-model="formData.applicant.adhaarNumber" 
+                       required ng-pattern="/^[0-9]{12}$/" placeholder="12 Digits only"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error" ng-show="memberForm.adhaarNumber.$touched && memberForm.adhaarNumber.$error.required">
+                    Please enter your Aadhaar number
+                </div>
+                <div class="error" ng-show="memberForm.adhaarNumber.$touched && memberForm.adhaarNumber.$error.pattern">
+                    Aadhaar number must be exactly 12 digits
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="aadhaarPhoto" class="required">Upload Aadhaar Photo</label>
+                <input type="file" id="aadhaarPhoto" name="aadhaarPhoto" accept="image/*" 
+                       file-model="formData.aadhaarPhotoFile" ng-required="true" ng-model="formData.aadhaarPhotoFile">
+                <div class="error" ng-show="memberForm.aadhaarPhoto.$touched && memberForm.aadhaarPhoto.$error.required">
+                    Please upload your Aadhaar photo
+                </div>
+                <small>Upload a clear photo of your Aadhaar card</small>
+            </div>
+            <div class="form-group">
+                <label class="required">Take Live Photo</label>
+                <div>
+                    <video id="video" width="300" height="200" autoplay></video>
+                    <canvas id="canvas" width="300" height="200"></-canvas>
+                </div>
+                <div id="photoPreview"></div>
+                <div class="camera-buttons">
+                    <button type="button" class="btn" ng-click="startCamera()" id="startCameraBtn">Start Camera</button>
+                    <button type="button" class="btn" ng-click="capturePhoto()" id="captureBtn" style="display:none;">Capture Photo</button>
+                    <button type="button" class="btn" ng-click="retakePhoto()" id="retakeBtn" style="display:none;">Retake</button>
+                </div>
+                <input type="hidden" id="livePhoto" name="livePhoto" ng-model="formData.livePhoto" required>
+                <div class="error" ng-show="memberForm.livePhoto.$touched && memberForm.livePhoto.$error.required">
+                    Please take your live photo
+                </div>
+                <small>Take a clear photo of yourself for verification</small>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>BUSINESS REFERENCES</h2>
+            <p>Business references are people who have experience with your business: customers, referral partners, vendors, etc.</p>
+            <p><em>This information will be used only for contacting references, not for any promotional purposes</em></p>
+            <h3>Reference #1</h3>
+            <div class="name-group">
+                <div class="form-group">
+                    <label for="ref1FirstName" class="required">First Name</label>
+                    <input type="text" id="ref1FirstName" name="ref1FirstName" 
+                           ng-model="formData.references.reference1.firstName" required ng-minlength="2"
+                           ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.ref1FirstName.$touched && memberForm.ref1FirstName.$error.required">
+                        Please enter first name
+                    </div>
+                    <div class="error" ng-show="memberForm.ref1FirstName.$touched && memberForm.ref1FirstName.$error.minlength">
+                        First name must be at least 2 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.ref1FirstName.$touched && memberForm.ref1FirstName.$error.pattern">
+                        First name cannot contain numbers or special characters
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ref1LastName" class="required">Last Name</label>
+                    <input type="text" id="ref1LastName" name="ref1LastName" 
+                           ng-model="formData.references.reference1.lastName" required ng-minlength="2"
+                           ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.ref1LastName.$touched && memberForm.ref1LastName.$error.required">
+                        Please enter last name
+                    </div>
+                    <div class="error" ng-show="memberForm.ref1LastName.$touched && memberForm.ref1LastName.$error.minlength">
+                        Last name must be at least 2 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.ref1LastName.$touched && memberForm.ref1LastName.$error.pattern">
+                        Last name cannot contain numbers or special characters
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ref1BusinessName">Reference #1 - Business Name</label>
+                <input type="text" id="ref1BusinessName" name="ref1BusinessName" 
+                       ng-model="formData.references.reference1.businessName">
+            </div>
+            <div class="form-group">
+                <label for="ref1Phone" class="required">Reference #1 - Phone</label>
+                <input type="tel" id="ref1Phone" name="ref1Phone" 
+                       ng-model="formData.references.reference1.phone" required ng-pattern="/^[0-9]{10}$/"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error" ng-show="memberForm.ref1Phone.$touched && memberForm.ref1Phone.$error.required">
+                    Please enter phone number
+                </div>
+                <div class="error" ng-show="memberForm.ref1Phone.$touched && memberForm.ref1Phone.$error.pattern">
+                    Phone number must be exactly 10 digits (numbers only)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ref1Email">Reference #1 - Email</label>
+                <input type="email" id="ref1Email" name="ref1Email" 
+                       ng-model="formData.references.reference1.email">
+                <div class="error" ng-show="memberForm.ref1Email.$touched && memberForm.ref1Email.$error.email">
+                    Please enter a valid email
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ref1Relationship">Reference #1 - Your Business Relationship</label>
+                <input type="text" id="ref1Relationship" name="ref1Relationship" 
+                       ng-model="formData.references.reference1.relationship">
+            </div>
+            <h3>Reference #2</h3>
+            <div class="name-group">
+                <div class="form-group">
+                    <label for="ref2FirstName" class="required">First Name</label>
+                    <input type="text" id="ref2FirstName" name="ref2FirstName" 
+                           ng-model="formData.references.reference2.firstName" required ng-minlength="2"
+                           ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.ref2FirstName.$touched && memberForm.ref2FirstName.$error.required">
+                        Please enter first name
+                    </div>
+                    <div class="error" ng-show="memberForm.ref2FirstName.$touched && memberForm.ref2FirstName.$error.minlength">
+                        First name must be at least 2 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.ref2FirstName.$touched && memberForm.ref2FirstName.$error.pattern">
+                        First name cannot contain numbers or special characters
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ref2LastName" class="required">Last Name</label>
+                    <input type="text" id="ref2LastName" name="ref2LastName" 
+                           ng-model="formData.references.reference2.lastName" required ng-minlength="2"
+                           ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.ref2LastName.$touched && memberForm.ref2LastName.$error.required">
+                        Please enter last name
+                    </div>
+                    <div class="error" ng-show="memberForm.ref2LastName.$touched && memberForm.ref2LastName.$error.minlength">
+                        Last name must be at least 2 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.ref2LastName.$touched && memberForm.ref2LastName.$error.pattern">
+                        Last name cannot contain numbers or special characters
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ref2BusinessName">Reference #2 - Business Name</label>
+                <input type="text" id="ref2BusinessName" name="ref2BusinessName" 
+                       ng-model="formData.references.reference2.businessName">
+            </div>
+            <div class="form-group">
+                <label for="ref2Phone" class="required">Reference #2 - Phone</label>
+                <input type="tel" id="ref2Phone" name="ref2Phone" 
+                       ng-model="formData.references.reference2.phone" required ng-pattern="/^[0-9]{10}$/"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error" ng-show="memberForm.ref2Phone.$touched && memberForm.ref2Phone.$error.required">
+                    Please enter phone number
+                </div>
+                <div class="error" ng-show="memberForm.ref2Phone.$touched && memberForm.ref2Phone.$error.pattern">
+                    Phone number must be exactly 10 digits (numbers only)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ref2Email">Reference #2 - Email</label>
+                <input type="email" id="ref2Email" name="ref2Email" 
+                       ng-model="formData.references.reference2.email">
+                <div class="error" ng-show="memberForm.ref2Email.$touched && memberForm.ref2Email.$error.email">
+                    Please enter a valid email
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ref2Relationship">Reference #2 - Your Business Relationship</label>
+                <input type="text" id="ref2Relationship" name="ref2Relationship" 
+                       ng-model="formData.references.reference2.relationship">
+            </div>
+            <div class="form-group">
+                <label class="required">
+                    <input type="checkbox" name="informedReferences" ng-model="formData.references.informedReferences" required> 
+                    I have/will inform the above contacts that I am sharing their information with GBS for the purpose of references
+                </label>
+                <div class="error" ng-show="memberForm.informedReferences.$touched && memberForm.informedReferences.$invalid">
+                    Please check this box
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn" ng-click="goBack()">Back</button>
+            <button type="submit" class="btn" ng-disabled="memberForm.$invalid || isSubmitting">
+                <span ng-if="!isSubmitting">Submit</span>
+                <span ng-if="isSubmitting" class="loading"></span>
+            </button>
+        </div>
+    </form> -->
+
+    <!DOCTYPE html>
+<html lang="en" ng-app="membershipApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dubai Syndicate Membership Application</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="url"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .required:after {
+            content: " *";
+            color: red;
+        }
+        .name-group {
+            display: flex;
+            gap: 10px;
+        }
+        .name-group .form-group {
+            flex: 1;
+        }
+        .address-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+            align-items: flex-start;
+        }
+        .address-group .form-group {
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+        }
+        .address-group .error {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .file-error {
+            color: red;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        input.ng-invalid.ng-touched,
+        select.ng-invalid.ng-touched,
+        textarea.ng-invalid.ng-touched {
+            border-color: #e74c3c;
+            background-color: #fde8e8;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        input[type="file"] {
+            padding: 6px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        #video, #canvas {
+            background: #f0f0f0;
+            margin-bottom: 10px;
+            display: none;
+            border: 1px solid #ddd;
+            max-width: 100%;
+        }
+        #photoPreview img {
+            border-radius: 4px;
+            max-width: 300px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        .camera-buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .additional-fields-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .additional-fields-group .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body ng-controller="MembershipController">
+    <div class="logo-container">
+        <img src="/images/App_Icon.png" alt="Dubai Syndicate Logo" class="logo">
+        <h1>Dubai Syndicate Membership Application Form</h1>
+    </div>
+
+    <form name="memberForm" ng-submit="submitForm()" novalidate enctype="multipart/form-data">
+        <div class="form-section">
+            <h2>Chapter Information</h2>
+            <div class="form-group">
+                <label for="chapter" class="required">Chapter</label>
+                <select id="chapter" name="chapter" ng-model="formData.chapter" required>
+                    <option value="">Select Chapter</option>
+                    <option value="Achiever">Achiever</option>
+                    <option value="Believer">Believer</option>
+                    <option value="Creator">Creator</option>
+                    <option value="Dreamer">Dreamer</option>
+                    <option value="Elevator">Elevator</option>
+                </select>
+                <div class="error" ng-show="memberForm.chapter.$touched && memberForm.chapter.$invalid">
+                    Please select a chapter
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="invitedBy" class="required">Who Invited you to this Chapter?</label>
+                <input type="text" id="invitedBy" name="invitedBy" ng-model="formData.invitedBy" required>
+                <div class="error" ng-show="memberForm.invitedBy.$touched && memberForm.invitedBy.$invalid">
+                    Please enter who invited you
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="howHeardAbout" class="required">How did you first hear about Dubai Syndicate?</label>
+                <select id="howHeardAbout" name="howHeardAbout" ng-model="formData.howHeardAbout" required>
+                    <option value="">Select an option</option>
+                    <option value="Friend or Family Member">Friend or Family Member</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Website">Website</option>
+                    <option value="Event">Event</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="error" ng-show="memberForm.howHeardAbout.$touched && memberForm.howHeardAbout.$invalid">
+                    Please select how you heard about Dubai Syndicate
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>ABOUT YOU</h2>
+            <p>Please fill exactly as in the Expression of Interest Form</p>
+            <div class="name-group">
+                <div class="form-group">
+                    <label for="firstName" class="required">First Name</label>
+                    <input type="text" id="firstName" name="firstName" ng-model="formData.applicant.firstName" 
+                           required ng-minlength="2" ng-maxlength="50" ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.firstName.$touched && memberForm.firstName.$error.required">
+                        Please enter your first name
+                    </div>
+                    <div class="error" ng-show="memberForm.firstName.$touched && (memberForm.firstName.$error.minlength || memberForm.firstName.$error.maxlength)">
+                        First name must be between 2-50 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.firstName.$touched && memberForm.firstName.$error.pattern">
+                        First name cannot contain numbers or special characters
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="required">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" ng-model="formData.applicant.lastName" 
+                           required ng-minlength="2" ng-maxlength="50" ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.lastName.$touched && memberForm.lastName.$error.required">
+                        Please enter your last name
+                    </div>
+                    <div class="error" ng-show="memberForm.lastName.$touched && (memberForm.lastName.$error.minlength || memberForm.lastName.$error.maxlength)">
+                        Last name must be between 2-50 characters
+                    </div>
+                    <div class="error" ng-show="memberForm.lastName.$touched && memberForm.lastName.$error.pattern">
+                        Last name cannot contain numbers or special characters
+                    </div>
+                </div>
+            </div>
+            
+            <!-- NEW FIELDS ADDED HERE -->
+            <div class="additional-fields-group">
+                <div class="form-group">
+                    <label for="dateOfBirth" class="required">Date of Birth</label>
+                    <input type="date" id="dateOfBirth" name="dateOfBirth" 
+                           ng-model="formData.applicant.dateOfBirth" required>
+                    <div class="error" ng-show="memberForm.dateOfBirth.$touched && memberForm.dateOfBirth.$error.required">
+                        Please enter your date of birth
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="spouseName">Spouse Name (If Applicable)</label>
+                    <input type="text" id="spouseName" name="spouseName" 
+                           ng-model="formData.applicant.spouseName" 
+                           ng-pattern="/^[a-zA-Z\s]*$/">
+                    <div class="error" ng-show="memberForm.spouseName.$touched && memberForm.spouseName.$error.pattern">
+                        Spouse name cannot contain numbers or special characters
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="anniversaryDate">Anniversary Date</label>
+                    <input type="date" id="anniversaryDate" name="anniversaryDate" 
+                           ng-model="formData.applicant.anniversaryDate">
+                </div>
+                <div class="form-group">
+                    <label for="bloodGroup">Blood Group</label>
+                    <select id="bloodGroup" name="bloodGroup" ng-model="formData.applicant.bloodGroup">
+                        <option value="">Select Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+            </div>
+            <!-- END OF NEW FIELDS -->
+            
+            <div class="form-group">
+                <label for="companyName" class="required">Company Name</label>
+                <input type="text" id="companyName" name="companyName" ng-model="formData.applicant.companyName" 
+                       required ng-minlength="2" ng-maxlength="100">
+                <div class="error" ng-show="memberForm.companyName.$touched && memberForm.companyName.$error.required">
+                    Please enter your company name
+                </div>
+                <div class="error" ng-show="memberForm.companyName.$touched && (memberForm.companyName.$error.minlength || memberForm.companyName.$error.maxlength)">
+                    Company name must be between 2-100 characters
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="industry" class="required">What is your Industry?</label>
+                <input type="text" id="industry" name="industry" ng-model="formData.applicant.industry" 
+                       placeholder="e.g. Manufacturing, Hospitality, Healthcare" required
+                       ng-pattern="/^[a-zA-Z\s,\-]*$/">
+                <div class="error" ng-show="memberForm.industry.$touched && memberForm.industry.$error.required">
+                    Please enter your industry
+                </div>
+                <div class="error" ng-show="memberForm.industry.$touched && memberForm.industry.$error.pattern">
+                    Industry cannot contain numbers or special characters (except comma and hyphen)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="professionalClassification" class="required">What is your Business Experience in Number Of Years?</label>
+                <input type="text" inputmode="numeric" id="professionalClassification" name="professionalClassification" 
+                       ng-model="formData.applicant.professionalClassification" placeholder="e.g. 10" 
+                       required ng-pattern="/^[0-9]*$/">
+                <div class="error" ng-show="memberForm.professionalClassification.$touched && memberForm.professionalClassification.$error.required">
+                    Please enter your experience
+                </div>
+                <div class="error" ng-show="memberForm.professionalClassification.$touched && memberForm.professionalClassification.$error.pattern">
+                    experience classification contain only number
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="required">Business Address</label>
+                <input type="text" id="businessAddress1" name="businessAddress1" 
+                       ng-model="formData.applicant.businessAddress.addressLine1" placeholder="Address Line 1" required>
+                <div class="error" ng-show="memberForm.businessAddress1.$touched && memberForm.businessAddress1.$invalid">
+                    Please enter address line 1
+                </div>
+                <input type="text" id="businessAddress2" name="businessAddress2" 
+                       ng-model="formData.applicant.businessAddress.addressLine2" placeholder="Address Line 2" style="margin-top: 5px;">
+                <div class="address-group">
+                    <div class="form-group">
+                        <select id="businessState" name="businessState" 
+                                ng-model="formData.applicant.businessAddress.state" ng-change="updateCities()" required>
+                            <option value="">Select State</option>
+                            <option value="Gujarat">Gujarat</option>
+                        </select>
+                        <div class="error" ng-show="memberForm.businessState.$touched && memberForm.businessState.$invalid">
+                            Please select a state
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select id="businessCity" name="businessCity" 
+                                ng-model="formData.applicant.businessAddress.city" required>
+                            <option value="">Select City</option>
+                            <option ng-repeat="city in cities" value="{{city}}">{{city}}</option>
+                        </select>
+                        <div class="error" ng-show="memberForm.businessCity.$touched && memberForm.businessCity.$invalid">
+                            Please select a city
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="businessPostalCode" name="businessPostalCode" 
+                               ng-model="formData.applicant.businessAddress.postalCode" placeholder="Postal / Zip Code" 
+                               required ng-pattern="/^[0-9]{6}$/">
+                        <div class="error" ng-show="memberForm.businessPostalCode.$touched && memberForm.businessPostalCode.$error.required">
+                            Please enter postal code
+                        </div>
+                        <div class="error" ng-show="memberForm.businessPostalCode.$touched && memberForm.businessPostalCode.$error.pattern">
+                            Postal code must be 6 digits
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="required">Email</label>
+                <input type="email" id="email" name="email" ng-model="formData.applicant.email" required>
+                <div class="error" ng-show="memberForm.email.$touched && memberForm.email.$error.required">
+                    Please enter your email
+                </div>
+                <div class="error" ng-show="memberForm.email.$touched && memberForm.email.$error.email">
+                    Please enter a valid email address
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mobileNumber" class="required">Mobile Number</label>
+                <input type="tel" id="mobileNumber" name="mobileNumber" ng-model="formData.applicant.mobileNumber" 
+                       ng-pattern="/^[0-9]{10}$/" placeholder="10 Digits only" required
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <div class="error" ng-show="memberForm.mobileNumber.$touched && memberForm.mobileNumber.$error.required">
+                    Please enter your mobile number
+                </div>
+                <div class="error" ng-show="memberForm.mobileNumber.$touched && memberForm.mobileNumber.$error.pattern">
+                    Mobile number must be exactly 10 digits (numbers only)
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn" ng-click="goBack()">Back</button>
+            <button type="submit" class="btn" ng-disabled="memberForm.$invalid || isSubmitting">
+                <span ng-if="!isSubmitting">Submit</span>
+                <span ng-if="isSubmitting" class="loading"></span>
+            </button>
+        </div>
+    </form>
+
+    <script>
+        angular.module('membershipApp', [])
+        .directive('fileModel', ['$parse', function ($parse) {
+            return {
+                restrict: 'A',
+                require: 'ngModel',
+                link: function(scope, element, attrs, ngModel) {
+                    element.bind('change', function() {
+                        scope.$apply(function() {
+                            var file = element[0].files[0];
+                            $parse(attrs.fileModel).assign(scope, file);
+                            // Photo validation removed
+                            ngModel.$setValidity('required', !!file);
+                        });
+                    });
+                }
+            };
+        }])
+        .controller('MembershipController', ['$scope', '$http', function($scope, $http) {
+            $scope.formData = {
+                applicant: {
+                    businessAddress: {}
+                }
+            };
+            $scope.isSubmitting = false;
+            $scope.cities = ['Surat', 'Bardoli'];
+
+            $scope.updateCities = function() {
+                if ($scope.formData.applicant.businessAddress.state === 'Gujarat') {
+                    $scope.cities = ['Surat', 'Bardoli'];
+                } else {
+                    $scope.cities = [];
+                }
+            };
+
+            $scope.goBack = function() {
+                window.history.back();
+            };
+
+            $scope.submitForm = function() {
+                if ($scope.memberForm.$valid) {
+                    $scope.isSubmitting = true;
+                    const fd = new FormData();
+                    
+                    for (const key in $scope.formData) {
+                        if (key === 'applicant') {
+                            for (const subKey in $scope.formData.applicant) {
+                                if (subKey === 'businessAddress') {
+                                    for (const addrKey in $scope.formData.applicant.businessAddress) {
+                                        fd.append(`applicant[businessAddress][${addrKey}]`, $scope.formData.applicant.businessAddress[addrKey]);
+                                    }
+                                } else {
+                                    fd.append(`applicant[${subKey}]`, $scope.formData.applicant[subKey]);
+                                }
+                            }
+                        } else {
+                            fd.append(key, $scope.formData[key]);
+                        }
+                    }
+                    
+                    $http({
+                        method: 'POST',
+                        url: '/users/memberApplication',
+                        data: fd,
+                        transformRequest: angular.identity,
+                        headers: {
+                            'Content-Type': undefined
+                        }
+                    }).then(function successCallback(response) {
+                        $scope.isSubmitting = false;
+                        if (response.data.status === 200) {
+                            alert('Form submitted successfully!');
+                            $scope.formData = {
+                                applicant: {
+                                    businessAddress: {}
+                                }
+                            };
+                            $scope.memberForm.$setPristine();
+                            $scope.memberForm.$setUntouched();
+                            window.location.href = '/success';
+                        } else {
+                            alert(response.data.message || 'Error submitting form. Please try again.');
+                        }
+                    }, function errorCallback(error) {
+                        $scope.isSubmitting = false;
+                        console.error('Error:', error);
+                        alert('An error occurred while submitting the form. Please try again.');
+                    });
+                } else {
+                    angular.forEach($scope.memberForm.$error, function(field) {
+                        angular.forEach(field, function(errorField) {
+                            errorField.$setTouched();
+                        });
+                    });
+                    alert('Please fill in all required fields correctly.');
+                }
+            };
+        }]);
+    </script>
+</body>
+</html>

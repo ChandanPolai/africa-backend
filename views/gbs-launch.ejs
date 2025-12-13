@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBS Launch Event Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .title-section h1 {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-alert {
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            font-weight: 500;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .icon-input {
+            position: relative;
+        }
+
+        .icon-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 10;
+        }
+
+        .icon-input .form-control {
+            padding-left: 45px;
+        }
+
+        .icon-input.textarea i {
+            top: 20px;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px dashed #dee2e6;
+        }
+
+        .qr-code-container img {
+            max-width: 200px;
+            margin-bottom: 15px;
+        }
+
+        .payment-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chapter-dropdown {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .spot-registration-notice {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            border: 3px solid #b02a37;
+        }
+
+        .spot-registration-notice i {
+            font-size: 1.6rem;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body ng-app="gbsLaunchApp" ng-cloak>
+    <div ng-controller="RegistrationController"
+        class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-5">
+        <div class="col-12 col-md-8 col-lg-6" ng-show="showInitial">
+            <div class="form-container p-5">
+                <div class="title-section">
+                    <h1>
+                        <i class="fas fa-calendar-check me-3"></i>GBS Launch Event Registration
+                    </h1>
+                    <p class="subtitle">
+                        Join us for the exciting launch of GBS! (Entry Fee: ₹1000)
+                    </p>
+                </div>
+
+                <div class="spot-registration-notice">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Spot Registration at the Event is ₹1500/-
+                </div>
+
+                <form name="registrationForm" ng-submit="submitForm()" novalidate>
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user-tag me-2"></i>Registration Type
+                        </label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="visitor" 
+                                    ng-model="formData.userType" value="Visitor" ng-change="toggleChapterDropdown()" required>
+                                <label class="form-check-label" for="visitor">
+                                    Visitor
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="userType" id="member" 
+                                    ng-model="formData.userType" value="Member" ng-change="toggleChapterDropdown()" required>
+                                <label class="form-check-label" for="member">
+                                    Member
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 chapter-dropdown" ng-show="showChapterDropdown">
+                        <label class="form-label">
+                            <i class="fas fa-users me-2"></i>Chapter
+                        </label>
+                        <select class="form-select" ng-model="formData.chapter" ng-required="showChapterDropdown">
+                            <option value="">Select Chapter</option>
+                            <option value="Achiever">Achiever</option>
+                            <option value="Believers">Believer</option>
+                            <option value="Creators">Creator</option>
+                            <option value="Dreamer">Dreamer</option>
+                            <option value="Elevator">Elevator</option>
+
+                           
+                          
+                        </select>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>First Name
+                        </label>
+                        <div class="icon-input">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="firstName" placeholder="Enter your first name"
+                                ng-model="formData.firstName" required class="form-control" />
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>Last Name
+                        </label>
+                        <div class="icon-input">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="lastName" placeholder="Enter your last name"
+                                ng-model="formData.lastName" required class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-mobile-alt me-2"></i>Mobile Number
+                        </label>
+                        <div class="icon-input textarea">
+                            <i class="fas fa-mobile-alt"></i>
+                            <input type="text" name="mobileNumber" placeholder="Enter your 10-digit mobile number"
+                                ng-model="formData.mobileNumber" required class="form-control" maxlength="10"
+                                inputmode="numeric" pattern="\d*" style="padding-left: 45px;" />
+                        </div>
+                        <span ng-show="registrationForm.mobileNumber.$error.pattern" class="text-danger">
+                            Please enter numbers only
+                        </span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user-friends me-2"></i>Invited By
+                        </label>
+                        <div class="icon-input">
+                            <i class="fas fa-user-friends"></i>
+                            <input type="text" name="invitedBy" placeholder="Who invited you?"
+                                ng-model="formData.invitedBy" required class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="payment-info">
+                        <h5 class="text-center mb-3"><i class="fas fa-rupee-sign me-2"></i>Payment Details</h5>
+                        <p class="text-center mb-3">Entry Fee: ₹1000</p>
+                        
+                        <div class="qr-code-container">
+                            <p>Scan this QR code to make payment:</p>
+                            <!-- Replace with your actual QR code image -->
+                           
+                            <img src="/images/payment-qr-code.jpg" alt="GBS Logo" class="logo">
+                                 
+                            <p class="mt-2">OR</p>
+                            <p>UPI ID: <strong>punam.patsol@okaxis</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-receipt me-2"></i>Payment Screenshot
+                        </label>
+                        <input type="file" class="form-control" id="paymentProof" 
+                            accept="image/*,.pdf" ng-required="true" file-model="formData.paymentProof">
+                        <small class="text-muted">Upload screenshot/PDF of your payment confirmation</small>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                            ng-disabled="loading || !isFormValid()">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            {{ loading ? 'Submitting...' : 'Complete Registration' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div ng-show="!showInitial"
+            class="success-page d-flex align-items-center justify-content-center min-vh-100 bg-light">
+            <div class="card shadow-lg border-0 p-5 rounded-4 text-center" style="max-width: 600px">
+                <div class="mb-4 text-success">
+                    <i class="fas fa-check-circle fa-3x"></i>
+                </div>
+                <h2 class="mb-3">Registration Successful!</h2>
+                <p class="mb-4">Thank you for registering for the GBS Launch Event.</p>
+                <div class="alert alert-success p-3" style="white-space:pre-wrap;">
+                  
+                    <p class="mt-3 mb-0">We look forward to seeing you at the event!</p>
+                </div>
+                <button class="btn btn-primary mt-4 px-4 py-2 rounded-pill" ng-click="reloadPage()">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Registration
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        angular.module('gbsLaunchApp', [])
+            .directive('fileModel', ['$parse', function ($parse) {
+                return {
+                    restrict: 'A',
+                    link: function(scope, element, attrs) {
+                        var model = $parse(attrs.fileModel);
+                        var modelSetter = model.assign;
+                        
+                        element.bind('change', function(){
+                            scope.$apply(function(){
+                                modelSetter(scope, element[0].files[0]);
+                            });
+                        });
+                    }
+                };
+            }])
+            .controller('RegistrationController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+                $scope.formData = {
+                    userType: '',
+                    chapter: '',
+                    firstName: '',
+                    lastName: '',
+                    mobileNumber: '',
+                    invitedBy: '',
+                    paymentProof: null
+                };
+                
+                $scope.loading = false;
+                $scope.showInitial = true;
+                $scope.showChapterDropdown = false;
+
+                $scope.isFormValid = function() {
+                    // Basic required fields validation
+                    if (!$scope.formData.userType || 
+                        !$scope.formData.firstName || 
+                        !$scope.formData.lastName || 
+                        !$scope.formData.mobileNumber || 
+                        !$scope.formData.invitedBy || 
+                        !$scope.formData.paymentProof) {
+                        return false;
+                    }
+                    
+                    // Mobile number format validation
+                    if (!/^\d{10}$/.test($scope.formData.mobileNumber)) {
+                        return false;
+                    }
+                    
+                    // Chapter validation for members
+                    if ($scope.formData.userType === 'Member' && !$scope.formData.chapter) {
+                        return false;
+                    }
+                    
+                    return true;
+                };
+
+                $scope.toggleChapterDropdown = function() {
+                    $scope.showChapterDropdown = ($scope.formData.userType === 'Member');
+                    if (!$scope.showChapterDropdown) {
+                        $scope.formData.chapter = '';
+                    }
+                };
+
+                $scope.reloadPage = function() {
+                    $window.location.reload();
+                };
+
+                $scope.submitForm = function() {
+                    if (!$scope.isFormValid()) {
+                        alert("Please fill all required fields correctly.");
+                        return;
+                    }
+
+                    $scope.loading = true;
+
+                    // Create FormData object to handle file upload
+                    var fd = new FormData();
+                    fd.append('userType', $scope.formData.userType);
+                    fd.append('chapter', $scope.formData.chapter);
+                    fd.append('firstName', $scope.formData.firstName);
+                    fd.append('lastName', $scope.formData.lastName);
+                    fd.append('mobileNumber', $scope.formData.mobileNumber);
+                    fd.append('invitedBy', $scope.formData.invitedBy);
+                    fd.append('paymentProof', $scope.formData.paymentProof);
+
+                    $http.post(`${window.location.origin}/users/submitEventRegistration`, fd, {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    })
+                    .then(function(response) {
+                        $scope.showInitial = false;
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        alert("An error occurred. Please try again.");
+                    })
+                    .finally(function() {
+                        $scope.loading = false;
+                    });
+                };
+            }]);
+    </script>
+</body>
+</html>
