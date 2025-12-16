@@ -252,6 +252,7 @@ router.get ("/TestimonialById/:testimonialId",  tenstimonialController.Testimoni
 router.get('/getUserDataCounts/:userId', getCOuntController.getUserDataCounts);
 router.get('/getUserDataCountsDetails/:userId', getCOuntController.getUserDataCountsDetails);
 router.post('/next-nearest-event', getCOuntController.getNextNearestEvent);
+router.get('/getdata/counts', authMiddleware, getCOuntController.getDataCounts);
 
 //scanned card
 router.get("/scanned-cards", authMiddleware, scannedCardController.getScannedCards);

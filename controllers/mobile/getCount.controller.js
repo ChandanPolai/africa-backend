@@ -647,9 +647,177 @@ const getNextNearestEvent = asyncHandler(async (req, res) => {
   //     data: eventsWithVisitorCounts
   //   });
   // });
+
+   const getDataCounts = asyncHandler(async (req, res) => {
+    // Get userId from token (set by authMiddleware)
+    const userId = req.user?.userId;
+    console.log("userId", userId);
+    
+    if (!userId) {
+        return response.unauthorized("User not authenticated", res);
+    }
+
+    // Find user by userId to check isAdmin
+    const user = await models.User.findById(userId).select('isAdmin');
+    
+    if (!user) {
+        return response.error("User not found", res);
+    }
+
+    // Check if user is admin
+    if (!user.isAdmin) {
+        return response.unauthorized("You are not authorized to access this data", res);
+    }
+
+    // If admin exists, return the same data as admin API
+    // Extract query parameters
+    const { state, city, chapter, fromDate, toDate } = req.query;
+    
+    const userFilter = {};
+    if (state) userFilter.state = state;
+    if (city) userFilter.city = city;
+    if (chapter) userFilter.chapter_name = chapter;
+    
+    const dateFilter = {};
+    if (fromDate) dateFilter.$gte = new Date(fromDate);
+    if (toDate) dateFilter.$lte = new Date(toDate);
+    
+    // Apply date filter to all relevant models
+    if (Object.keys(dateFilter).length > 0) {
+        userFilter.createdAt = dateFilter;
+    }
+
+    // Get filtered user IDs once to reuse
+    let userIds = [];
+    if (Object.keys(userFilter).length > 0) {
+        userIds = await models.User.find(userFilter).distinct('_id');
+    }
+
+    // Count users with filters
+    const userCount = await models.User.countDocuments(userFilter);
+    
+    // Count admins (no location filter as per current model)
+    const adminCount = await models.Admin.countDocuments();
+    
+    // Count asks (no location filter as per current model)
+    const askCount = await models.Asks.countDocuments();
+    
+    // REFERRALS - Count given and received separately
+    const referralGivenFilter = {};
+    const referralReceivedFilter = {};
+    
+    if (userIds.length > 0) {
+        referralGivenFilter.giver_id = { $in: userIds };
+        referralReceivedFilter.receiver_id = { $in: userIds };
+    }
+    if (Object.keys(dateFilter).length > 0) {
+        referralGivenFilter.createdAt = dateFilter;
+        referralReceivedFilter.createdAt = dateFilter;
+    }
+    
+    const [referralGivenCount, referralReceivedCount] = await Promise.all([
+        models.Referral.countDocuments(referralGivenFilter),
+        models.Referral.countDocuments(referralReceivedFilter)
+    ]);
+    
+    // TYFCBs - Count given and received separately
+    const tyfcbGivenFilter = {};
+    const tyfcbReceivedFilter = {};
+    
+    if (userIds.length > 0) {
+        tyfcbGivenFilter.giverId = { $in: userIds };
+        tyfcbReceivedFilter.receiverId = { $in: userIds };
+    }
+    if (Object.keys(dateFilter).length > 0) {
+        tyfcbGivenFilter.createdAt = dateFilter;
+        tyfcbReceivedFilter.createdAt = dateFilter;
+    }
+    
+    const [tyfcbGivenCount, tyfcbReceivedCount] = await Promise.all([
+        models.Tyfcbs.countDocuments(tyfcbGivenFilter),
+        models.Tyfcbs.countDocuments(tyfcbReceivedFilter)
+    ]);
+    
+    // ONE-TO-ONE MEETINGS - Count initiated and participated
+    const oneToOneInitiatedFilter = {};
+    const oneToOneParticipatedFilter = {};
+    
+    if (userIds.length > 0) {
+        oneToOneInitiatedFilter.memberId1 = { $in: userIds };
+        oneToOneParticipatedFilter.memberId2 = { $in: userIds };
+    }
+    if (Object.keys(dateFilter).length > 0) {
+        oneToOneInitiatedFilter.createdAt = dateFilter;
+        oneToOneParticipatedFilter.createdAt = dateFilter;
+    }
+    
+    const [oneToOneInitiatedCount, oneToOneParticipatedCount] = await Promise.all([
+        models.OneToOne.countDocuments(oneToOneInitiatedFilter),
+        models.OneToOne.countDocuments(oneToOneParticipatedFilter)
+    ]);
+    
+    // TESTIMONIALS - Count given and received separately
+    const testimonialGivenFilter = {};
+    const testimonialReceivedFilter = {};
+    
+    if (userIds.length > 0) {
+        testimonialGivenFilter.giverId = { $in: userIds };
+        testimonialReceivedFilter.receiverId = { $in: userIds };
+    }
+    if (Object.keys(dateFilter).length > 0) {
+        testimonialGivenFilter.createdAt = dateFilter;
+        testimonialReceivedFilter.createdAt = dateFilter;
+    }
+    
+    const [testimonialGivenCount, testimonialReceivedCount] = await Promise.all([
+        models.TestimonialModel.countDocuments(testimonialGivenFilter),
+        models.TestimonialModel.countDocuments(testimonialReceivedFilter)
+    ]);
+    
+    // Other counts (no relationship filters)
+    const testimonialReqCount = await models.TestimonialRequest.countDocuments();
+    const bannerCount = await models.Banner.countDocuments();
+    const eventCount = await models.Event.countDocuments();
+
+    const data = {
+        users: userCount,
+        admins: adminCount,
+        asks: askCount,
+        
+        // Relationship-based counts
+        referrals: {
+            given: referralGivenCount,
+            received: referralReceivedCount,
+            total: referralGivenCount + referralReceivedCount
+        },
+        tyfcbs: {
+            given: tyfcbGivenCount,
+            received: tyfcbReceivedCount,
+            total: tyfcbGivenCount + tyfcbReceivedCount
+        },
+        oneToOnes: {
+            initiated: oneToOneInitiatedCount,
+            participated: oneToOneParticipatedCount,
+            total: oneToOneInitiatedCount + oneToOneParticipatedCount
+        },
+        testimonials: {
+            given: testimonialGivenCount,
+            received: testimonialReceivedCount,
+            total: testimonialGivenCount + testimonialReceivedCount
+        },
+        
+        // Other counts
+        testimonialReqs: testimonialReqCount,
+        banners: bannerCount,
+        events: eventCount,
+    };
+    
+    return response.success("Data counts fetched successfully", data, res);
+});
     
 export const getCOuntController = {
     getNextNearestEvent,
     getUserDataCounts,
-  getUserDataCountsDetails
+  getUserDataCountsDetails,
+  getDataCounts
 }

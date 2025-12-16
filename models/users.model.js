@@ -160,6 +160,7 @@ const userSchema = new mongoose.Schema({
   // Email-based OTP login fields (similar to ND-VIBE)
   otp: { type: String, default: "" },
   otpExpires: { type: Date, default: null },
+  isAdmin: { type: Boolean, default: false },
 }, { timestamps: true });
 
 userSchema.plugin(mongoosePaginate);
