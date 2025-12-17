@@ -253,6 +253,7 @@ router.get('/getUserDataCounts/:userId', getCOuntController.getUserDataCounts);
 router.get('/getUserDataCountsDetails/:userId', getCOuntController.getUserDataCountsDetails);
 router.post('/next-nearest-event', getCOuntController.getNextNearestEvent);
 router.get('/getdata/counts', authMiddleware, getCOuntController.getDataCounts);
+router.get('/get-user-analytics', getCOuntController.getUserAnalytics);
 
 //scanned card
 router.get("/scanned-cards", authMiddleware, scannedCardController.getScannedCards);

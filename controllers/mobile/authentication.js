@@ -52,6 +52,13 @@ const registerUser = asyncHandler(async (req, res) => {
     //   return res.status(400).json({ error: "Failed to send verification OTP", success: false });
     // }
 
+    // Get device type from header and validate it
+    const deviceTypeFromHeader = req.headers['x-device-type'] || req.body.deviceType || 'unknown';
+    const validDeviceTypes = ['ios', 'android', 'web', 'unknown'];
+    const deviceType = validDeviceTypes.includes(deviceTypeFromHeader.toLowerCase()) 
+      ? deviceTypeFromHeader.toLowerCase() 
+      : 'unknown';
+
     const newUser = new models.User({
       name,
       email,
@@ -66,6 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
       keywords,
       country,
       fcm: fcm || "",
+      deviceType: deviceType,
     });
 
     await newUser.save();
@@ -377,7 +385,12 @@ const loginUser = asyncHandler(async (req, res) => {
       .json({ error: "Device ID is required", success: false });
   }
 
-  const deviceType = req.headers["x-device-type"] || "unknown";
+  // Get device type from header and validate it
+  const deviceTypeFromHeader = req.headers["x-device-type"] || req.body.deviceType || "unknown";
+  const validDeviceTypes = ['ios', 'android', 'web', 'unknown'];
+  const deviceType = validDeviceTypes.includes(deviceTypeFromHeader.toLowerCase()) 
+    ? deviceTypeFromHeader.toLowerCase() 
+    : 'unknown';
 
   const user = await models.User.findOne({ email, isActive: true });
 
@@ -385,6 +398,7 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: "User not found", success: false });
   }
 
+  // Update device type
   user.deviceType = deviceType;
   user.loginCount = (user.loginCount || 0) + 1;
   user.lastLogin = new Date();

@@ -814,10 +814,48 @@ const getNextNearestEvent = asyncHandler(async (req, res) => {
     
     return response.success("Data counts fetched successfully", data, res);
 });
+
+// Simple analytics API - Get iOS, Android, and Total users count
+const getUserAnalytics = asyncHandler(async (req, res) => {
+  try {
+    // Count iOS users
+    const iosUsers = await models.User.countDocuments({ 
+      deviceType: 'ios',
+      isActive: true 
+    });
+
+    // Count Android users
+    const androidUsers = await models.User.countDocuments({ 
+      deviceType: 'android',
+      isActive: true 
+    });
+
+    // Count total active users
+    const totalUsers = await models.User.countDocuments({ 
+      isActive: true 
+    });
+
+    const Application = {
+      Image: "https://community.itfuturz.in/images/community.png",
+      ApplicationName: "Africa Community",
+    }
+
+    return response.success('Analytics data fetched successfully', {
+      iosUsers,
+      androidUsers,
+      totalUsers,
+      Application
+    }, res);
+  } catch (error) {
+    console.error('Error fetching user analytics:', error);
+    return response.error('Failed to fetch analytics data', 500, res);
+  }
+});
     
 export const getCOuntController = {
     getNextNearestEvent,
     getUserDataCounts,
   getUserDataCountsDetails,
-  getDataCounts
+  getDataCounts,
+  getUserAnalytics
 }
