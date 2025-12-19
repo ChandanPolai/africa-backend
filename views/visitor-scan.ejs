@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GBS Visitor Orientation Form</title>
+    <title>Africa Community Visitor Orientation Form</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
@@ -417,7 +417,7 @@
                     
                     // Debounce search - wait 300ms after user stops typing
                     $scope.searchPromise = $timeout(function() {
-                        const apiUrl = `https://gbs-connect.com/admin/getUsersByEventId?eventId=${eventId}&search=${encodeURIComponent(searchTerm)}`;
+                        const apiUrl = `https://community.itfuturz.in/admin/getUsersByEventId?eventId=${eventId}&search=${encodeURIComponent(searchTerm)}`;
                         //const apiUrl = `http://localhost:3200/admin/getUsersByEventId?eventId=${eventId}&search=${encodeURIComponent(searchTerm)}`;
                         $http.get(apiUrl)
                             .then(function(response) {
@@ -530,7 +530,7 @@
                     
                     console.log('Submitting data:', submitData);
                     
-$http.post('https://gbs-connect.com/admin/createScanVisitor', submitData)
+$http.post('https://community.itfuturz.in/admin/createScanVisitor', submitData)
                         .then(function (response) {
                             $scope.showForm = false;
                             $scope.message = response.data.message || 'Visitor data submitted successfully!';

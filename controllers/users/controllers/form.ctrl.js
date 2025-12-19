@@ -763,7 +763,7 @@ export const submitEventRegistration = async (req, res) => {
             name: `${parsedData.firstName} ${parsedData.lastName}`.trim(),
             email: parsedData.email || "",
             mobile: parsedData.mobileNumber,
-            businessKeyword: parsedData.businessKeyword || "GBS",
+            businessKeyword: parsedData.businessKeyword || "africa-community",
             originId: "685a80c61ecf5bcb96968fb7",
             countryCode: "91"
         };
@@ -844,7 +844,7 @@ export const convertToDigitalCard = async (req, res) => {
                 name: application.name || "",
                 email: application.email || "",
                 mobile: application.mobile_number || "",
-                businessKeyword: "GBS", // Default value as per original logic
+                businessKeyword: "africa-community", // Default value as per original logic
                 originId: "685a80c61ecf5bcb96968fb7",
                 countryCode: "91"
             };

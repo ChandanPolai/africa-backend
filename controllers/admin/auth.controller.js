@@ -697,7 +697,7 @@ export const convertMemberToUser = async (req, res) => {
         name: userData.name.trim(),
         email: userData.email || "",
         mobile: userData.mobile_number,
-        businessKeyword: userData.business[0]?.business_type || "GBS",
+        businessKeyword: userData.business[0]?.business_type || "africa-community",
         originId: "685a80c61ecf5bcb96968fb7", 
         countryCode: "91"
       };
@@ -743,7 +743,7 @@ This digital profile will help you network with other members and showcase your 
 Thank you for joining us. We look forward to supporting your business growth!
 
 Warm regards,
-[GBS Team]`;
+[Africa Community Team]`;
         
         // Send WhatsApp message
         try {
@@ -830,10 +830,10 @@ Your exclusive access:
 - Password: user@1234
 (You may change your password after first login)
 
-We sincerely hope this adds value to your business. Thank you for being an important part of the GBS family. 
+We sincerely hope this adds value to your business. Thank you for being an important part of the africa-community family. 
 
 Warm regards,
-[GBS Team]`;
+[Africa Community Team]`;
 
       return {
         mobile: member.applicant.mobileNumber,

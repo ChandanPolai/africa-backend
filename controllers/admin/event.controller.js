@@ -105,7 +105,7 @@ import { notificationController } from "../mobile/notification.controller.js";
 //       name: name.trim(),
 //       email: email || "",
 //       mobile: mobile_number,
-//       businessKeyword: business_type || "GBS",
+//       businessKeyword: business_type || "africa-community",
 //       originId: "685a80c61ecf5bcb96968fb7", // Same as in the other API
 //       countryCode: "91"
 //     };
@@ -227,7 +227,7 @@ const createScanVisitor = asyncHandler(async (req, res) => {
       name: name.trim(),
       email: email || "",
       mobile: mobile_number,
-      businessKeyword: business_type || "GBS",
+      businessKeyword: business_type || "africa-community",
       originId: "685a80c61ecf5bcb96968fb7", // Same as in the other API
       countryCode: "91"
     };
@@ -270,10 +270,10 @@ Your exclusive access:
 - Password: user@1234
 (You may change your password after first login)
 
-We sincerely hope this adds value to your business. Thank you for being an important part of the GBS family. 
+We sincerely hope this adds value to your business. Thank you for being an important part of the africa-community family. 
 
 Warm regards,
-[GBS Team]`;
+[Africa Community Team]`;
 
         // Send WhatsApp message
         try {
