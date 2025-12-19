@@ -79,7 +79,30 @@ const getAllPodcasts = asyncHandler(async (req, res) => {
 
 const updatePodcast = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const updates = req.body;
+  const updates = { ...req.body };
+
+  // Handle image file upload
+  if (req.file) {
+    updates.podcasterImage = req.file.path.replace(/\\/g, '/'); // Normalize path for cross-platform compatibility
+  }
+
+  // Handle date updates if provided
+  if (updates.startDate) {
+    updates.startDate = moment.tz(updates.startDate, 'Asia/Kolkata').toDate();
+  }
+  if (updates.endDate) {
+    updates.endDate = moment.tz(updates.endDate, 'Asia/Kolkata').toDate();
+  }
+
+  // Validate dates if both are provided
+  if (updates.startDate && updates.endDate) {
+    const startMoment = moment.tz(updates.startDate, 'Asia/Kolkata');
+    const endMoment = moment.tz(updates.endDate, 'Asia/Kolkata');
+    
+    if (endMoment.isBefore(startMoment)) {
+      return response.error("End date must be after start date", 400, res);
+    }
+  }
 
   const podcast = await models.Podcast.findByIdAndUpdate(
     id, 

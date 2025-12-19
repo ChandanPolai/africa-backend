@@ -661,12 +661,12 @@ const getNextNearestEvent = asyncHandler(async (req, res) => {
     const user = await models.User.findById(userId).select('isAdmin');
     
     if (!user) {
-        return response.success("User not found", res);
+        return response.success("User not found", null ,res);
     }
 
     // Check if user is admin
     if (!user.isAdmin) {
-        return response.success("You are not authorized to access this data", res);
+        return response.success("You are not authorized to access this data", null, res);
     }
 
     // If admin exists, return the same data as admin API
