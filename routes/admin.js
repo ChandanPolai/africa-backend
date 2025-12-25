@@ -52,6 +52,8 @@ import { slotController } from '../controllers/admin/slot.controller.js';
 // import {analyticsController} from '../controllers/admin/analytics.controller.js';
 
 import {podcastBookingController} from '../controllers/admin/booking.controller.js';
+import { complaintAdminController } from '../controllers/admin/complaint.controller.js';
+import { suggestionAdminController } from '../controllers/admin/suggestion.controller.js';
 const contactUsImageUploader = createUploadMiddleware('contactUsImages');
 const userUpload = createUploadMiddleware("User").single('profilePic');
 const podcastImageUploader = createUploadMiddleware('podcastImages');
@@ -352,6 +354,18 @@ router.put('/updateContactUs/:id', contactUsImageUploader.single('image'), Conta
 router.get('/getAllContactUs', ContactUsController.getAllContactUs);
 router.post('/createFeePlan', feesController.createFeePlan);
 router.get('/getAllFeePlans', feesController.getAllFeePlans);
+
+// Complaints routes
+router.get('/getAllComplaints', authMiddleware, complaintAdminController.getAllComplaints);
+router.get('/getComplaintById/:id', authMiddleware, complaintAdminController.getComplaintById);
+router.put('/updateComplaintStatus/:id', authMiddleware, complaintAdminController.updateComplaintStatus);
+router.delete('/deleteComplaint/:id', authMiddleware, complaintAdminController.deleteComplaint);
+
+// Suggestions routes
+router.get('/getAllSuggestions', authMiddleware, suggestionAdminController.getAllSuggestions);
+router.get('/getSuggestionById/:id', authMiddleware, suggestionAdminController.getSuggestionById);
+router.put('/updateSuggestionStatus/:id', authMiddleware, suggestionAdminController.updateSuggestionStatus);
+router.delete('/deleteSuggestion/:id', authMiddleware, suggestionAdminController.deleteSuggestion);
 
 
 
